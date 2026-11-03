@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - AI 학습 추천 시스템</title>
+
+    <style>
+        /* 페이지 전체의 기본 디자인입니다. */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        /* 회원가입 입력 영역입니다. */
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 제목 디자인입니다. */
+        h1 {
+            text-align: center;
+            font-size: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* 입력 항목의 제목입니다. */
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        /* 아이디와 비밀번호 입력창입니다. */
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        /* 회원가입 버튼입니다. */
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background-color: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* 버튼에 마우스를 올렸을 때의 색상입니다. */
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* 안내 메시지 영역입니다. */
+        .message {
+            margin-top: 15px;
+            text-align: center;
+            color: #dc2626;
+        }
+
+        /* 로그인 페이지로 이동하는 링크입니다. */
+        .login-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>AI 학습 추천 시스템</h1>
+
+        <h2>회원가입</h2>
+
+        <!-- 회원가입 정보를 서버로 전송합니다. -->
+        <form method="POST" action="/register">
+
+            <!-- 사용할 아이디를 입력합니다. -->
+            <label for="username">아이디</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                maxlength="50"
+                autocomplete="username"
+                placeholder="아이디를 입력하세요"
+            >
+
+            <!-- 사용할 비밀번호를 입력합니다. -->
+            <label for="password">비밀번호</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                minlength="8"
+                autocomplete="new-password"
+                placeholder="8자 이상 입력하세요"
+            >
+
+            <!-- 회원가입 요청 버튼입니다. -->
+            <button type="submit">회원가입</button>
+        </form>
+
+        <!-- 서버에서 전달한 안내 메시지를 표시합니다. -->
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+
+        <!-- 로그인 화면으로 이동하는 링크입니다. -->
+        <div class="login-link">
+            <a href="/login">이미 계정이 있으신가요? 로그인</a>
+        </div>
+    </div>
+</body>
+</html>

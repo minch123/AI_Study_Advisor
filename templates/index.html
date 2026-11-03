@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<!-- HTML5 문서임을 선언합니다. -->
+
+<html lang="ko">
+<!-- 웹페이지의 언어를 한국어로 설정합니다. -->
+
+<head>
+    <!-- 웹페이지의 설정 영역입니다. -->
+
+    <meta charset="UTF-8">
+    <!-- 한글을 정상적으로 표시합니다. -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 모바일에서도 화면이 정상적으로 표시되도록 합니다. -->
+
+    <title>AI Study Advisor</title>
+    <!-- 브라우저 탭에 표시되는 제목입니다. -->
+
+    <style>
+        /* 전체 페이지의 기본 스타일입니다. */
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        /* 전체 콘텐츠의 최대 너비를 설정합니다. */
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        /* 카드 스타일입니다. */
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 제목을 가운데 정렬합니다. */
+
+        .title {
+            text-align: center;
+        }
+
+        /* 과목별 입력 영역입니다. */
+
+        .subject {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        /* 입력 영역 사이의 간격입니다. */
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        /* 입력창의 제목입니다. */
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        /* 입력창 디자인입니다. */
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* 분석 버튼입니다. */
+
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            background: #222;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* 버튼에 마우스를 올렸을 때입니다. */
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+        <!-- 학습 기록 조회 페이지로 이동하는 버튼입니다. -->
+    <div style="text-align: right; margin: 15px;">
+
+        <!-- /history 주소로 이동합니다. -->
+        <a href="/history"
+        style="
+            display: inline-block;
+            padding: 10px 16px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        ">
+            📚 학습 기록 조회
+        </a>
+
+    </div>
+    <!-- 실제 웹페이지 내용입니다. -->
+
+    <div class="container">
+        <!-- 전체 콘텐츠 영역입니다. -->
+
+        <div class="card title">
+            <!-- 프로젝트 제목 영역입니다. -->
+
+            <h1>🤖 AI Study Advisor</h1>
+
+            <p>
+                AI 기반 개인 맞춤형 학습 추천 시스템
+            </p>
+
+        </div>
+
+
+        <form action="/analyze" method="POST">
+            <!-- 입력한 데이터를 /analyze 주소로 POST 방식으로 전송합니다. -->
+
+
+            <div class="card">
+                <!-- 학생 정보를 입력하는 카드입니다. -->
+
+                <h2>👤 학생 정보</h2>
+
+                <div class="input-group">
+                    <!-- 학생 이름 입력 영역입니다. -->
+
+                    <label for="student_name">
+                        학생 이름
+                    </label>
+
+                    <input
+                        type="text"
+                        id="student_name"
+                        name="student_name"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <!-- 과목별 데이터를 입력하는 카드입니다. -->
+
+                <h2>📚 과목별 학습 데이터</h2>
+
+
+                <!-- ==================== -->
+                <!-- 국어 -->
+                <!-- ==================== -->
+
+                <div class="subject">
+
+                    <h3>🇰🇷 국어</h3>
+
+                    <div class="input-group">
+
+                       <!-- 국어 시험의 전체 문항 수를 입력합니다. -->
+                 <label>전체 문항 수</label>
+
+                <input
+                type="number"
+                name="korean_total_questions"
+                min="1"
+                placeholder="예: 20"
+                required
+                >
+
+
+                <!-- 국어 시험에서 맞은 문항 수를 입력합니다. -->
+                <label>맞은 문항 수</label>
+
+                <input
+                type="number"
+                name="korean_correct_questions"
+                min="0"
+                placeholder="예: 15"
+                required
+>
+                    </div>
+
+                    <div class="input-group">
+
+                        <label for="korean_study_time">
+                            공부 시간 (분)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="korean_study_time"
+                            name="korean_study_time"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================== -->
+                <!-- 수학 -->
+                <!-- ==================== -->
+
+                <div class="subject">
+
+                    <h3>🔢 수학</h3>
+
+                    <div class="input-group">
+
+                        <!-- 수학 시험의 전체 문항 수를 입력합니다. -->
+                    <label>전체 문항 수</label>
+
+                    <input
+                        type="number"
+                        name="math_total_questions"
+                        min="1"
+                        placeholder="예: 20"
+                        required
+                    >
+
+
+                    <!-- 수학 시험에서 맞은 문항 수를 입력합니다. -->
+                    <label>맞은 문항 수</label>
+
+                    <input
+                        type="number"
+                        name="math_correct_questions"
+                        min="0"
+                        placeholder="예: 15"
+                        required
+>
+                    </div>
+
+                    <div class="input-group">
+
+                        <label for="math_study_time">
+                            공부 시간 (분)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="math_study_time"
+                            name="math_study_time"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================== -->
+                <!-- 영어 -->
+                <!-- ==================== -->
+
+                <div class="subject">
+
+                    <h3>🇺🇸 영어</h3>
+
+                    <div class="input-group">
+
+                        <!-- 영어 시험의 전체 문항 수를 입력합니다. -->
+                    <label>전체 문항 수</label>
+
+                    <input
+                        type="number"
+                        name="english_total_questions"
+                        min="1"
+                        placeholder="예: 20"
+                        required
+                    >
+
+
+                    <!-- 영어 시험에서 맞은 문항 수를 입력합니다. -->
+                    <label>맞은 문항 수</label>
+
+                    <input
+                        type="number"
+                        name="english_correct_questions"
+                        min="0"
+                        placeholder="예: 15"
+                        required
+                    >
+                    <div class="input-group">
+
+                        <label for="english_study_time">
+                            공부 시간 (분)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="english_study_time"
+                            name="english_study_time"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================== -->
+                <!-- 과학 -->
+                <!-- ==================== -->
+
+                <div class="subject">
+
+                    <h3>🔬 과학</h3>
+
+                    <div class="input-group">
+
+                        <!-- 과학 시험의 전체 문항 수를 입력합니다. -->
+                    <label>전체 문항 수</label>
+
+                    <input
+                        type="number"
+                        name="science_total_questions"
+                        min="1"
+                        placeholder="예: 20"
+                        required
+                    >
+
+
+                    <!-- 과학 시험에서 맞은 문항 수를 입력합니다. -->
+                    <label>맞은 문항 수</label>
+
+                    <input
+                        type="number"
+                        name="science_correct_questions"
+                        min="0"
+                        placeholder="예: 15"
+                        required
+                    >
+                    </div>
+
+                    <div class="input-group">
+
+                        <label for="science_study_time">
+                            공부 시간 (분)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="science_study_time"
+                            name="science_study_time"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <!-- AI 분석 버튼입니다. -->
+
+                <button type="submit">
+                    🤖 AI 학습 분석 시작
+                </button>
+
+            </div>
+
+        </form>
+        
+    </div>
+
+        <script>
+        // 입력 폼을 가져옵니다.
+        const studyForm = document.querySelector("form");
+
+        // 사용자가 AI 학습 분석 버튼을 눌렀을 때 실행됩니다.
+        studyForm.addEventListener("submit", function(event) {
+
+            // 국어의 전체 문항 수를 숫자로 가져옵니다.
+            const koreanTotal = Number(document.querySelector("[name='korean_total_questions']").value);
+
+            // 국어의 맞은 문항 수를 숫자로 가져옵니다.
+            const koreanCorrect = Number(document.querySelector("[name='korean_correct_questions']").value);
+
+                        // 국어의 맞은 문항 수가 전체 문항 수보다 많은지 확인합니다.
+            if (koreanCorrect > koreanTotal) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("국어의 맞은 문항 수는 전체 문항 수보다 많을 수 없습니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+
+            // 국어의 전체 문항 수가 0 이하인지 확인합니다.
+            if (koreanTotal <= 0) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("국어의 전체 문항 수는 1개 이상이어야 합니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+           // 수학의 전체 문항 수를 숫자로 가져옵니다.
+            const mathTotal = Number(document.querySelector("[name='math_total_questions']").value);
+
+            // 수학의 맞은 문항 수를 숫자로 가져옵니다.
+            const mathCorrect = Number(document.querySelector("[name='math_correct_questions']").value);
+
+            // 수학의 맞은 문항 수가 전체 문항 수보다 많은지 확인합니다.
+            if (mathCorrect > mathTotal) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("수학의 맞은 문항 수는 전체 문항 수보다 많을 수 없습니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+
+            // 수학의 전체 문항 수가 0 이하인지 확인합니다.
+            if (mathTotal <= 0) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("수학의 전체 문항 수는 1개 이상이어야 합니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+
+            }
+
+                    // 영어의 전체 문항 수를 숫자로 가져옵니다.
+            const englishTotal = Number(document.querySelector("[name='english_total_questions']").value);
+
+            // 영어의 맞은 문항 수를 숫자로 가져옵니다.
+            const englishCorrect = Number(document.querySelector("[name='english_correct_questions']").value);
+
+            // 영어의 맞은 문항 수가 전체 문항 수보다 많은지 확인합니다.
+            if (englishCorrect > englishTotal) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("영어의 맞은 문항 수는 전체 문항 수보다 많을 수 없습니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+
+            // 영어의 전체 문항 수가 0 이하인지 확인합니다.
+            if (englishTotal <= 0) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("영어의 전체 문항 수는 1개 이상이어야 합니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+            
+             // 과학의 전체 문항 수를 숫자로 가져옵니다.
+            const scienceTotal = Number(document.querySelector("[name='science_total_questions']").value);
+
+            // 과학의 맞은 문항 수를 숫자로 가져옵니다.
+            const scienceCorrect = Number(document.querySelector("[name='science_correct_questions']").value);
+
+            // 과학의 맞은 문항 수가 전체 문항 수보다 많은지 확인합니다.
+            if (scienceCorrect > scienceTotal) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("과학의 맞은 문항 수는 전체 문항 수보다 많을 수 없습니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+
+            // 과학의 전체 문항 수가 0 이하인지 확인합니다.
+            if (scienceTotal <= 0) {
+
+                // 기본적인 폼 제출을 중단합니다.
+                event.preventDefault();
+
+                // 오류 내용을 알림창으로 표시합니다.
+                alert("과학의 전체 문항 수는 1개 이상이어야 합니다.");
+
+                // 입력 화면에 그대로 머무릅니다.
+                return;
+            }
+
+
+        });
+    </script>
+
+</body>
+
+</html>
