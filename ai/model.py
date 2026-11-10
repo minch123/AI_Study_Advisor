@@ -4,6 +4,9 @@ import sys
 # 현재 파일의 위치를 기준으로 프로젝트 루트 폴더를 찾기 위한 모듈을 가져옵니다.
 import os
 
+# CSV 학습 데이터를 읽기 위한 라이브러리입니다.
+import pandas as pd
+
 # 현재 model.py의 상위 폴더인 프로젝트 루트 경로를 가져옵니다.
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,69 +33,134 @@ model = None
 model_accuracy = None
 
 
-# 데이터베이스의 학습 기록을 AI가 사용할 형태로 변환합니다.
+
+# 데이터베이스 또는 CSV에서 AI 학습 데이터를 준비하는 함수입니다.
 def prepare_training_data():
 
-    # SQLite에서 모든 학습 기록을 가져옵니다.
-    data = get_all_study_records()
+    # 가상 학습 데이터 CSV 파일의 절대 경로를 설정합니다.
+    csv_path = os.path.join(
+        project_root,
+        "ai",
+        "training_data.csv"
+    )
 
-    # 데이터가 하나도 없는 경우입니다.
-    if len(data) == 0:
-
-        # 학습할 데이터가 없다는 오류를 발생시킵니다.
-        raise ValueError("데이터베이스에 학습 기록이 없습니다.")
-
-    # AI가 학습할 입력 데이터를 저장할 리스트입니다.
+    # AI 학습에 사용할 입력 데이터를 저장합니다.
     X = []
 
-    # AI가 학습할 정답 데이터를 저장할 리스트입니다.
+    # AI 학습에 사용할 정답 데이터를 저장합니다.
     y = []
 
-    # 데이터베이스의 각 학습 기록을 하나씩 확인합니다.
-    for _, row in data.iterrows():
+    # 데이터베이스에서 학습 기록을 가져옵니다.
+    data = get_all_study_records()
 
-        # 국어 데이터를 AI 학습 데이터에 추가합니다.
-        X.append([
-            row["korean_score"],
-            row["korean_study_time"],
-            row["korean_wrong_rate"]
-        ])
+    # 데이터베이스에 학습 기록이 있다면 처리합니다.
+    if not data.empty:
 
-        # 국어의 학습 필요 여부를 정답 데이터에 추가합니다.
-        y.append(row["korean_need"])
+        # 학습 기록을 한 행씩 확인합니다.
+        for _, row in data.iterrows():
 
-        # 수학 데이터를 AI 학습 데이터에 추가합니다.
-        X.append([
-            row["math_score"],
-            row["math_study_time"],
-            row["math_wrong_rate"]
-        ])
+            # 네 과목의 컬럼 이름을 순서대로 확인합니다.
+            for subject in ["korean", "math", "english", "science"]:
 
-        # 수학의 학습 필요 여부를 정답 데이터에 추가합니다.
-        y.append(row["math_need"])
+                # 해당 과목의 학습 필요 여부를 가져옵니다.
+                need = row[f"{subject}_need"]
 
-        # 영어 데이터를 AI 학습 데이터에 추가합니다.
-        X.append([
-            row["english_score"],
-            row["english_study_time"],
-            row["english_wrong_rate"]
-        ])
+                # AI 정답이 0 또는 1인 데이터만 사용합니다.
+                if pd.isna(need) or need not in (0, 1):
+                    continue
 
-        # 영어의 학습 필요 여부를 정답 데이터에 추가합니다.
-        y.append(row["english_need"])
+                # 점수, 공부 시간, 오답률을 가져옵니다.
+                features = [
+                    row[f"{subject}_score"],
+                    row[f"{subject}_study_time"],
+                    row[f"{subject}_wrong_rate"]
+                ]
 
-        # 과학 데이터를 AI 학습 데이터에 추가합니다.
-        X.append([
-            row["science_score"],
-            row["science_study_time"],
-            row["science_wrong_rate"]
-        ])
+                # 입력값에 누락된 항목이 있으면 건너뜁니다.
+                if any(pd.isna(value) for value in features):
+                    continue
 
-        # 과학의 학습 필요 여부를 정답 데이터에 추가합니다.
-        y.append(row["science_need"])
+                # AI 입력 데이터를 추가합니다.
+                X.append(features)
 
-    # 학습용 입력 데이터와 정답 데이터를 반환합니다.
-    return X, y
+                # AI 정답 데이터를 정수로 추가합니다.
+                y.append(int(need))
+
+    # 기존 데이터가 충분하고 두 클래스가 모두 존재하는지 확인합니다.
+    if (
+        len(X) >= 10
+        and y.count(0) >= 2
+        and y.count(1) >= 2
+    ):
+
+        # 기존 SQLite 학습 데이터를 반환합니다.
+        return X, y
+
+    # 기존 데이터가 부족할 때 CSV 파일 존재 여부를 확인합니다.
+    if not os.path.isfile(csv_path):
+
+        # CSV 파일이 없으면 오류를 발생시킵니다.
+        raise FileNotFoundError(
+            f"AI 학습용 CSV 파일을 찾을 수 없습니다: {csv_path}"
+        )
+
+    # 개인정보가 없는 가상 학습 데이터를 읽어옵니다.
+    fallback_data = pd.read_csv(csv_path)
+
+    # CSV에 필요한 컬럼이 모두 있는지 확인합니다.
+    required_columns = [
+        "score",
+        "study_time",
+        "wrong_rate",
+        "need"
+    ]
+
+    # 누락된 컬럼이 있는지 확인합니다.
+    missing_columns = [
+        column
+        for column in required_columns
+        if column not in fallback_data.columns
+    ]
+
+    # 필요한 컬럼이 누락되면 오류를 발생시킵니다.
+    if missing_columns:
+        raise ValueError(
+            f"CSV에 필요한 컬럼이 없습니다: {missing_columns}"
+        )
+
+    # 필요한 컬럼에서 결측값이 있는 행을 제거합니다.
+    fallback_data = fallback_data.dropna(
+        subset=required_columns
+    )
+
+    # AI 정답이 0 또는 1인 데이터만 사용합니다.
+    fallback_data = fallback_data[
+        fallback_data["need"].isin([0, 1])
+    ]
+
+    # CSV의 점수, 공부 시간, 오답률을 입력 데이터로 변환합니다.
+    fallback_X = fallback_data[
+        ["score", "study_time", "wrong_rate"]
+    ].values.tolist()
+
+    # CSV의 학습 필요 여부를 정수 리스트로 변환합니다.
+    fallback_y = fallback_data["need"].astype(int).tolist()
+
+    # RandomForest 학습 및 평가에 필요한 데이터가 있는지 확인합니다.
+    if (
+        len(fallback_X) < 10
+        or fallback_y.count(0) < 2
+        or fallback_y.count(1) < 2
+    ):
+
+        # 가상 학습 데이터도 부족하면 오류를 발생시킵니다.
+        raise ValueError(
+            "AI 학습용 CSV에 0과 1 데이터가 각각 2개 이상 필요합니다."
+        )
+
+    # 가상 학습 데이터를 반환합니다.
+    return fallback_X, fallback_y
+
 
 
 # Random Forest AI 모델을 학습시키는 함수입니다.
