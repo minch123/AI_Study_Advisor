@@ -565,11 +565,15 @@ def analyze():
 )
 
 
+# Render와 로컬 환경에서 데이터베이스 테이블을 초기화합니다.
+create_table()
+
+# AI 분석에 필요한 컬럼을 추가합니다.
+add_ai_columns()
+
+
 # Python 파일을 직접 실행했을 때 실행됩니다.
 if __name__ == "__main__":
-
-    # 데이터베이스 테이블을 생성합니다.
-    create_table()
 
     # Flask 개발 서버를 실행합니다.
     app.run(debug=False)
