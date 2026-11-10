@@ -17,7 +17,7 @@ from database.database import save_study_record
 from ai.recommend import recommend_subject, recommend_subjects, create_ai_summary, create_priority_text
 
 # AI 학습용 정답 데이터를 생성하는 함수를 가져옵니다.
-from database.database import update_ai_labels
+from database.database import create_table, update_ai_labels, add_ai_columns
 
 # 기존 취약도 분석 함수를 가져옵니다.
 from analysis.analyzer import analyze_subjects
